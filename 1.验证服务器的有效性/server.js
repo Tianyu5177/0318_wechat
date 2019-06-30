@@ -19,7 +19,7 @@ app.use((request,response,next)=>{
           4.将加密的结果与signature进行对比
               -- 一致：返回给微信服务器：echostr
               -- 不一致：非法请求，驳回请求
-  * */
+  */
 
   let {signature,echostr,timestamp,nonce} = request.query
   //1.将微信服务器发过来的timestamp，nonce，事先在网页里约定好的token(atguigu),存入一个数组中，随后对数组进行字典排序
