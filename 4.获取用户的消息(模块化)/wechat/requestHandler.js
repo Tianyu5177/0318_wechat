@@ -3,7 +3,8 @@
 * */
 let sha1 = require('sha1')
 let config = require('../config')
-let {parseString} = require('xml2js')
+let {getXMLData,parseXML2js,formatObjectData} = require('../tools/parseData')
+
 module.exports = async (request,response,next)=>{
   /*
   * 1.在网页上配置开发者服务器的时候，微信服务器会返回给开发者服务器如下信息
@@ -40,19 +41,18 @@ module.exports = async (request,response,next)=>{
     response.send(echostr)
   }
 
-  //微信服务器转发了用于的消息
+  //微信服务器转发了用户的消息
   else if(request.method === 'POST' && sha1Str === signature){
     console.log('微信服务器转发了用户的消息')
     //微信服务器转发给开发者用户消息时，是以xml格式发送过来的流式数据
 
     //1.获取微信服务器发过来的XML格式的数据
     let xmlData = await getXMLData(request)
-
     //2.将上一步获取到的xml数据，转换为js中的对象
     let jsObjectData = parseXML2js(xmlData)
-
     //3.进一步格式化数据
     let userInput = formatObjectData(jsObjectData)
+
     console.log(userInput);
   }
 
@@ -63,77 +63,6 @@ module.exports = async (request,response,next)=>{
 
 }
 
-//获取微信服务器发过来的XML格式的数据
-function getXMLData(request) {
-  /*
-    <xml>
-      <ToUserName><![CDATA[gh_afd83bce98ae]]></ToUserName>
-      <FromUserName><![CDATA[o1KCX0_v9SZYkIlfb1NITuA2lL-U]]></FromUserName>
-      <CreateTime>1561948006</CreateTime>
-      <MsgType><![CDATA[text]]></MsgType>
-      <Content><![CDATA[你好啊]]></Content>
-      <MsgId>22361719730480675</MsgId>
-    </xml>
-    */
-  return new Promise((resolve,reject)=>{
-    let result = ''
-    request.on('data',(data)=>{
-      result += data.toString()
-    })
-    request.on('end',()=>{
-      resolve(result)
-    })
-  })
-}
 
-//将xml数据转换为js对象
-function parseXML2js(xmlData) {
-  /*
-    { xml:
-      { ToUserName: [ 'gh_afd83bce98ae' ],
-        FromUserName: [ 'o1KCX0_v9SZYkIlfb1NITuA2lL-U' ],
-        CreateTime: [ '1561951739' ],
-        MsgType: [ 'text' ],
-        Content: [ '我饿了' ],
-        MsgId: [ '22361768904097058' ] }
-    }
-  */
-  let result
-  parseString(xmlData,{trim:true},(err,data)=>{
-    if(!err){
-      result = data
-    }else{
-      console.log('进行xml转换js时出现错误',err)
-    }
-  })
-  return result
-}
-
-//进一步格式化数据
-function formatObjectData({xml}) {
-  /*
-    { xml:
-      { ToUserName: [ 'gh_afd83bce98ae' ],
-        FromUserName: [ 'o1KCX0_v9SZYkIlfb1NITuA2lL-U' ],
-        CreateTime: [ '1561951739' ],
-        MsgType: [ 'text' ],
-        Content: [ '我饿了' ],
-        MsgId: [ '22361768904097058' ] }
-    }
-
-    { ToUserName: 'gh_afd83bce98ae',
-      FromUserName: 'o1KCX0_v9SZYkIlfb1NITuA2lL-U',
-      CreateTime: '1561951739',
-      MsgType: 'text',
-      Content: '我饿了',
-      MsgId: '22361768904097058'
-    }
-  */
-  let result = {}
-  for (let key in xml){
-    result[key] = xml[key][0]
-  }
-  return result
-}
 
 
