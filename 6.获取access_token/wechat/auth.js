@@ -56,8 +56,14 @@ class Auth {
 
 }
 
+
+let tmp
 ;(async()=>{
   let auth = new Auth()
   let data = await auth.getAccessToken()
-  console.log(data);
+  tmp = data
 })()
+
+console.log(a);
+
+
