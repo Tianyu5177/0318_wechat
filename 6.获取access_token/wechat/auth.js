@@ -26,3 +26,38 @@
 *                     获取新的，随后保存
 *
 * */
+
+//引入发请求的库
+let rp = require('request-promise-native')
+//引入开发者核心配置信息
+let {appID,appsecret} = require('../config')
+
+class Auth {
+
+  //找微信服务器“要”一个access_token
+  async getAccessToken(){
+    const url = `https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=${appID}&secret=${appsecret}`
+    let result = await rp({
+      method:'GET',
+      url,
+      json:true
+    })
+
+    if(result){
+      console.log('向微信服务器请求access_token成功！')
+      result.expires_in = Date.now() + 7200000 - 300000
+      return result
+    }else{
+      console.log('向微信服务器请求access_token失败！')
+    }
+  }
+
+
+
+}
+
+;(async()=>{
+  let auth = new Auth()
+  let data = await auth.getAccessToken()
+  console.log(data);
+})()
