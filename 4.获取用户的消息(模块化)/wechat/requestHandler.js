@@ -45,7 +45,6 @@ module.exports = async (request,response,next)=>{
   else if(request.method === 'POST' && sha1Str === signature){
     console.log('微信服务器转发了用户的消息')
     //微信服务器转发给开发者用户消息时，是以xml格式发送过来的流式数据
-
     //1.获取微信服务器发过来的XML格式的数据
     let xmlData = await getXMLData(request)
     //2.将上一步获取到的xml数据，转换为js中的对象
