@@ -53,11 +53,28 @@ module.exports = async (request,response,next)=>{
     let userInput = formatObjectData(jsObjectData)
 
     console.log(userInput);
+    if(userInput.Content === '你好'){
+      response.send(`<xml>
+                      <ToUserName><![CDATA[${userInput.FromUserName}]]></ToUserName>
+                      <FromUserName><![CDATA[${userInput.ToUserName}]]></FromUserName>
+                      <CreateTime>${Date.now()}</CreateTime>
+                      <MsgType><![CDATA[text]]></MsgType>
+                      <Content><![CDATA[都挺好]]></Content>
+                    </xml>`)
+    }else{
+      response.send(`<xml>
+                      <ToUserName><![CDATA[${userInput.FromUserName}]]></ToUserName>
+                      <FromUserName><![CDATA[${userInput.ToUserName}]]></FromUserName>
+                      <CreateTime>${Date.now()}</CreateTime>
+                      <MsgType><![CDATA[text]]></MsgType>
+                      <Content><![CDATA[你说什么？我听不懂]]></Content>
+                    </xml>`)
+    }
   }
 
   //过来的是非法请求
   else{
-    response.send('err')
+    response.send('想得美！')
   }
 
 }
