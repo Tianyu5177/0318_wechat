@@ -12,7 +12,7 @@ let rp = require('request-promise-native')
 })()
 
 //1.创建菜单的方法
-async function createMenu(access_token) {
+async function createMenu(access_token,menuObject) {
   const url = `https://api.weixin.qq.com/cgi-bin/menu/create?access_token=${access_token}`
   let createResult = await rp({
     method:'POST',
