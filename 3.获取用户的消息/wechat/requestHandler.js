@@ -106,6 +106,7 @@ function parseXML2js(xmlData) {
       console.log('进行xml转换js时出现错误',err)
     }
   })
+
   return result
 }
 

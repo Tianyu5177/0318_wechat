@@ -117,11 +117,7 @@ class Auth {
 
 }
 
-;(async()=>{
-  let auth = new Auth()
-  let result = await auth.fetchAccessToken() 
-  console.log(result)
-})()
+module.exports = Auth
 
 
 
